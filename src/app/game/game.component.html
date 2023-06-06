@@ -1,4 +1,4 @@
-<app-player></app-player>
+<app-player class="playerIcon" *ngFor="let player of game.players; let i = index" [name]="player" [ngStyle]="{'left.px': (i+1) * 100}" ></app-player>
 
 <div class="field">
 

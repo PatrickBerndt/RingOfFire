@@ -25,6 +25,11 @@
    
     transform: scale(1) translateY(-180px) translateX(140px) rotate(-10deg);
 }
+.playerIcon{
+    position: absolute;
+    left: 0;
+    top: 50px;
+}
 .pick-card{
     cursor: pointer;
     animation: pick-Card-Animation 1s ease-in-out;
