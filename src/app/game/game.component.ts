@@ -31,6 +31,14 @@ export class GameComponent {
       
     
       this.pickCardAnimation = true;
+
+      if(this.game.currentPlayer < this.game.players.length -1){
+        this.game.currentPlayer++;
+      }else{
+        this.game.currentPlayer= 0;
+      }
+
+
       setTimeout(() => {
         this.game.playedCards.push(this.currentCard)
         this.pickCardAnimation = false;
@@ -45,7 +53,10 @@ export class GameComponent {
     });
 
     dialogRef.afterClosed().subscribe(name => {
-      this.game.players.push(name);
+      if(name && name.length > 0){
+        this.game.players.push(name);
+      }
+      
     });
   }
 
