@@ -1,7 +1,14 @@
-import { Component } from '@angular/core';
+import { Component ,inject} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Game } from 'src/models/game';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
+import { Firestore, collectionData, collection, setDoc, doc, addDoc } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
+interface Item {
+  name: string,
+  
+};
 
 @Component({
   selector: 'app-game',
@@ -9,19 +16,35 @@ import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent {
+  
+  firestore: Firestore = inject(Firestore);
   pickCardAnimation = false; 
   currentCard: string = '';
   game!: Game;
+  item$: Observable<import("@angular/fire/firestore").DocumentData[]>;
   
 
-  constructor(public dialog: MatDialog){}
+  constructor(public dialog: MatDialog){
+
+    
+
+  }
+
+  
 
   ngOnInit(): void{
     this.newGame();
+    const itemCollection = collection(this.firestore, 'games');
+    this.item$ = collectionData(itemCollection);
+    this.item$.subscribe((game)=> 
+    console.log(game)
+    )
   }
 
   newGame(){
     this.game = new Game();
+    const itemCollection = collection(this.firestore, 'games');
+    addDoc(itemCollection,{game: this.game.toJSON()})
   }
 
 
