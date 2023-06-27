@@ -45,8 +45,7 @@ export class GameComponent {
 
   newGame(){
     this.game = new Game();
-    const itemCollection = collection(this.firestore, 'games');
-    addDoc(itemCollection,{game: this.game.toJSON()})
+ 
   }
 
 
