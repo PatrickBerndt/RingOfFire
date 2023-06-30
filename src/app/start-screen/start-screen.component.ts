@@ -12,24 +12,17 @@ import { Game } from 'src/models/game';
 export class StartScreenComponent {
   firestore: Firestore = inject(Firestore);
   game!: Game;
-  item$: Observable<import("@angular/fire/firestore").DocumentData[]>;
+  
 
   constructor(private router: Router){
 
   };
 
-  newGame(){
-    this.game = new Game();
-    const itemCollection = collection(this.firestore, 'games');
-    addDoc(itemCollection,{game: this.game.toJSON()})
-    this.item$ = collectionData(itemCollection, {idField: 'id'} );
-    this.item$.subscribe((game)=>{console.log(game);
-    })
-    
-
-
-
-
+  async newGame(){
+    let game = new Game();
+    const gameCollection = collection(this.firestore, 'games');
+    await addDoc(gameCollection, game.toJSON()).then((gameInfo:any) => {
+      this.router.navigate(['/game', gameInfo.id]); });
     //this.router.navigateByUrl('/game/');
   }
 
