@@ -18,8 +18,7 @@ interface Item {
 })
 export class GameComponent {
   
-  pickCardAnimation = false; 
-  currentCard: string = '';
+  
   game!: Game;
   gameId: string;
   game$: Observable<any>;
@@ -40,14 +39,18 @@ export class GameComponent {
   }
     
   setGameInstance(){
-    const docRef = doc(this.collection, this.gameId);
+   this.docRef = doc(this.collection, this.gameId);
     this.game$ = docData(this.docRef);
     this.game$.subscribe(currentGame => {
       this.game.players = currentGame.players;
       this.game.stack = currentGame.stack;
       this.game.playedCards = currentGame.playedCards;
       this.game.currentPlayer = currentGame.currentPlayer;
+      this.game.currentCard = currentGame.currentCard;
+      this.game.pickCardAnimation = currentGame.pickCardAnimation;
+
     });
+     
   }
   
 
@@ -56,17 +59,18 @@ export class GameComponent {
   }
 
   takeCard(){
-    if(!this.pickCardAnimation){
-      this.currentCard = this.game.stack.pop()!;
-      this.pickCardAnimation = true;
+    if(!this.game.pickCardAnimation){
+      this.game.currentCard = this.game.stack.pop()!;
+      this.game.pickCardAnimation = true;
       if(this.game.currentPlayer < this.game.players.length -1){
         this.game.currentPlayer++;
       }else{
         this.game.currentPlayer= 0;
       }
+      this.saveGame();
       setTimeout(() => {
-        this.game.playedCards.push(this.currentCard)
-        this.pickCardAnimation = false;
+        this.game.playedCards.push(this.game.currentCard)
+        this.game.pickCardAnimation = false;
         this.saveGame();
       }, 1000);
     }
@@ -85,8 +89,7 @@ export class GameComponent {
   }
 
   saveGame(){
-    const itemCollection = doc(this.firestore, 'games', this.gameId);
-    updateDoc(itemCollection, {game: this.game.toJSON()})
+    updateDoc(this.docRef,this.game.toJSON())
   }
 
 }
